@@ -4,7 +4,7 @@ const MongoClient = require('mongodb').MongoClient;
 
 const contractABI = require('../abi.json');
 
-const contractAddress ="0x024E8be99d7358f17A8aE6aaE75FaC93058ec543";
+const contractAddress = require('../consts.json').contractAddress;
 
 const web3js = new web3(new web3.providers.WebsocketProvider("ws://159.69.251.155:8546"));
 
