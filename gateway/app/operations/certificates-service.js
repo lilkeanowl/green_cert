@@ -25,5 +25,6 @@ module.exports = {
     init: function(mongo) {
         certificateRecords = mongo.collection('certificateRecords');
     },
-    createCertificate: createCertificate
+    createCertificate: createCertificate,
+    isGreen: isGreen
 };
