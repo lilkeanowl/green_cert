@@ -1,0 +1,23 @@
+{
+  "name": "green_cert",
+  "version": "1.0.0",
+  "description": "Hackathon project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LikeAnOw1/green_cert.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LikeAnOw1/green_cert/issues"
+  },
+  "homepage": "https://github.com/LikeAnOw1/green_cert#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "mongodb": "^2.2.16"
+  }
+}
