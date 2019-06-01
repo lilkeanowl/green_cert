@@ -12,7 +12,6 @@ const ledgerHandler = function(app, db) {
 }
 
 function saveData(data, db) {
-    console.log(db);
     db.collection('energyCollectJournal').insert(data, (err, result) => {
         if (err) { 
             console.log("An error occured ", err);

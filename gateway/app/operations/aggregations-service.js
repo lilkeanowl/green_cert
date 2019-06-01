@@ -1,4 +1,4 @@
-const certificateService = require("./certificates-service");
+const transactions = require("../transactions/transaction-manager");
 
 let aggregationRecords = {};
 const ENERGY_THRESHOLD = 1000;
@@ -11,7 +11,7 @@ function sendTransactionRecord(stationId, collected, timestamp) {
             let collectionSum = collected + document.collected;
             let firstCollection = document.firstCollection;
             while (collectionSum >= ENERGY_THRESHOLD) {
-                certificateService.createCertificate(document.stationId, document.firstCollection, timestamp);
+                transactions.createCertificate(document.stationId, document.firstCollection, timestamp);
                 collectionSum = collectionSum - ENERGY_THRESHOLD;
                 firstCollection = timestamp;
             }

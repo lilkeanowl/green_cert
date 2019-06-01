@@ -1,5 +1,5 @@
 {
-  "name": "green_cert",
+  "name": "green_cert_gateway",
   "version": "1.0.0",
   "description": "Hackathon project",
   "main": "server.js",
@@ -18,6 +18,8 @@
   "homepage": "https://github.com/LikeAnOw1/green_cert#readme",
   "dependencies": {
     "express": "^4.14.0",
-    "mongodb": "^2.2.16"
+    "mongodb": "^2.2.16",
+    "ethereumjs-tx": "^1.3.7",
+    "web3": "^1.0.0-beta.55"
   }
 }
