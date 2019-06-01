@@ -2,7 +2,7 @@ const web3 = require('web3');
 const Tx = require('ethereumjs-tx');
 const MongoClient = require('mongodb').MongoClient;
 
-const contractABI = require('./abi.json');
+const contractABI = require('../abi.json');
 
 const contractAddress ="0x024E8be99d7358f17A8aE6aaE75FaC93058ec543";
 
