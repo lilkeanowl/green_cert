@@ -52,7 +52,7 @@ contract GreenCert is ERC721 {
     }
     
     modifier onlyVerificators() {
-        require(generators[msg.sender]);
+        require(verificators[msg.sender]);
         _;
     }
 
