@@ -11,8 +11,8 @@ contract ERC721 {
     mapping (uint256 => address) public approved;
     mapping (uint256 => string) metadata;
 
-    event Transfer(address indexed _from, address indexed _to, uint256 _tokenId);
-    event Approval(address indexed _owner, address indexed _approved, uint256 _tokenId);
+    event Transfer(address indexed _from, address indexed _to, uint256 indexed _tokenId);
+    event Approval(address indexed _owner, address indexed _approved, uint256 indexed _tokenId);
 
     modifier onlyOwner(uint256 _tokenId) {
         require(msg.sender == tokenOwners[_tokenId]);
@@ -46,7 +46,7 @@ contract ERC721 {
     }
 
 // ERC 721 methods
-    function balanceOf(address _owner) public view returns(uint) {
+    function balanceOf(address _owner) public view returns(uint256) {
         return ownedTokens[_owner].length;
     }
     
@@ -75,5 +75,47 @@ contract ERC721 {
 
     function tokenMetadata(uint256 _tokenId) public view returns(string memory) {
         return metadata[_tokenId];
+    }
+
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId) external payable {}
+    function transferFrom(address _from, address _to, uint256 _tokenId) external payable {}
+    function setApprovalForAll(address _operator, bool _approved) external {}
+    function getApproved(uint256 _tokenId) external view returns (address) {
+        return 0x0;
+    }
+    function isApprovedForAll(address _owner, address _operator) external view returns (bool) {
+        return false;
+    }
+    function supportsInterface(bytes4 interfaceID) external view returns (bool) {
+        return true;
+    }
+    function uint2str(uint i) internal returns (string){
+        if (i == 0) return "0";
+        uint j = i;
+        uint length;
+        while (j != 0){
+            length++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(length);
+        uint k = length - 1;
+        while (i != 0){
+            bstr[k--] = byte(48 + i % 10);
+            i /= 10;
+        }
+        return string(bstr);
+    }
+    function strConcat(string _a, string _b) internal returns (string){
+        bytes memory _ba = bytes(_a);
+        bytes memory _bb = bytes(_b);
+        string memory abcde = new string(_ba.length + _bb.length);
+        bytes memory babcde = bytes(abcde);
+        uint k = 0;
+        for (uint i = 0; i < _ba.length; i++) babcde[k++] = _ba[i];
+        for (i = 0; i < _bb.length; i++) babcde[k++] = _bb[i];
+        return string(babcde);
+    }
+    function tokenURI(uint256 _tokenId) external view returns (string) {
+        return strConcat("http://159.69.251.155/verify/", uint2str(_tokenId));
     }
 }

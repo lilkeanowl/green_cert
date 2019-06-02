@@ -1,7 +1,10 @@
 const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
 const routes = require('./app/routes');
+
+//constructors
 const aggregations = require('./app/operations/aggregations-service').init;
+const journal = require('./app/operations/journal-service').init;
 const transactions = require('./app/transactions/transaction-manager').init;
 
 const port = process.env.PORT || 8080;
@@ -18,7 +21,7 @@ MongoClient.connect(dbUrl, {}, (err, client) => {
         if (err) throw err;
     }
     mongodb = client.db("green_cert");
-    routes(app, mongodb);
+    routes(app);
     services(mongodb);
     app.listen(port, () => {
       console.log('Listening on port ' + port);
@@ -27,5 +30,6 @@ MongoClient.connect(dbUrl, {}, (err, client) => {
 
 function services(mongodb) {
     aggregations(mongodb);
-    transactions(mongodb)
+    journal(mongodb);
+    transactions(mongodb);
 }
