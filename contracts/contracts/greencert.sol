@@ -62,6 +62,7 @@ contract GreenCert is ERC721 {
         tokenOwners[idx] = records[idx].generator;
         totalSupply++;
         emit Green(idx, records[idx].generator);
+        emit Transfer(0x0, records[idx].generator, idx);
     }
     
     function isGreen(uint idx) public view returns(bool, address) {
