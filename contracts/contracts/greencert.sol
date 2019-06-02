@@ -9,7 +9,7 @@ contract GreenCert is ERC721 {
         uint end;
     }
     
-    record[] records;
+    record[] public records;
     address public founder;
     
     mapping (address=>bool) generators;
