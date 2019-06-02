@@ -12,7 +12,7 @@ const transactions = require("../transactions/transaction-manager");
             }
             if (!certificate.green) {
                 //validation
-                transactions.validateCertificate(certificate.stationId, certificate.recordId, (green) => {
+                transactions.validateCertificate(certificate.stationId, certificate.recordId, certificate.lastRecord, (green) => {
                     res.end(JSON.stringify({green: green}));   
                 });
             } else {

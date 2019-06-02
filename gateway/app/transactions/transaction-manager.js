@@ -51,7 +51,7 @@ function addRecord(stationId, firstRecordTimestamp, lastRecordTimestamp, private
             }
             console.log('TX', result);
             saveRecord(stationId, result, firstRecordTimestamp, lastRecordTimestamp);
-            validateCertificate(stationId, result, (green) => { 
+            validateCertificate(stationId, result, lastRecordTimestamp, (green) => { 
                 console.log("Certificate " + result + " is green: " + green);
             });
         });
@@ -68,11 +68,11 @@ function saveRecord(stationId, recordId, firstRecord, lastRecord, green = false)
         });
 }
 
-function validateCertificate(stationId, recordId, callback) {
+function validateCertificate(stationId, recordId, lastRecord, callback) {
     console.log(stationId);
     console.log(recordId);
     //should be contraint by timestamp
-    journal.find({id: stationId}).toArray((err, items) => {
+    journal.find({id: stationId, timestamp: {$lte: lastRecord}}).toArray((err, items) => {
         if (err) {
             console.log("An error occured ", err);
         }
