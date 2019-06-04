@@ -8,11 +8,13 @@ const defaultPK = Buffer.from('5f612cb61d0f9a028620490eb7aed26888531f965452feb1e
 const defaultMyAddress = "0x66131Cc548B724B6cF21Fe2771850034a906A33C";
 
 const contractAddress = require('../../../consts.json').contractAddress;
+const validate = require('./validatior');
 
 const web3js = new web3(new web3.providers.HttpProvider("http://159.69.251.155:8545"));
 const contract = new web3js.eth.Contract(contractABI, contractAddress);
 
 let certificateRecords = {};
+let journal = {};
 
 function createCertificate(stationId, firstRecordTimestamp, lastRecordTimestamp) {
     //load theese from db
@@ -21,12 +23,13 @@ function createCertificate(stationId, firstRecordTimestamp, lastRecordTimestamp)
     addRecord(stationId, firstRecordTimestamp, lastRecordTimestamp, privateKey, agentAddress);
 }
 
-function validateCertificate(recordId) {
-    return false;
-}
-
-function findCertificate(recordId) {
-    return certificateRecords.findOne({recordId: recordId});
+function findCertificate(recordId, callback) {
+    return certificateRecords.findOne({recordId: recordId}, (err, doc) => {
+        if (err) {
+            console.log(err);
+        }
+        callback(doc);
+    });
 }
 
 function addRecord(stationId, firstRecordTimestamp, lastRecordTimestamp, privateKey, agentAddress) {
@@ -48,6 +51,9 @@ function addRecord(stationId, firstRecordTimestamp, lastRecordTimestamp, private
             }
             console.log('TX', result);
             saveRecord(stationId, result, firstRecordTimestamp, lastRecordTimestamp);
+            validateCertificate(stationId, result, lastRecordTimestamp, (green) => { 
+                console.log("Certificate " + result + " is green: " + green);
+            });
         });
     });
 }
@@ -62,10 +68,26 @@ function saveRecord(stationId, recordId, firstRecord, lastRecord, green = false)
         });
 }
 
+function validateCertificate(stationId, recordId, lastRecord, callback) {
+    console.log(stationId);
+    console.log(recordId);
+    //should be contraint by timestamp
+    journal.find({id: stationId, timestamp: {$lte: lastRecord}}).toArray((err, items) => {
+        if (err) {
+            console.log("An error occured ", err);
+        }
+        let green = validate(items);
+        certificateRecords.updateOne({recordId: recordId}, {$set: {green: green}});
+        callback(green);
+    });
+}
+
 module.exports = {
     init: function (mongo) {
         certificateRecords = mongo.collection('certificateRecords');
+        journal = mongo.collection('energyCollectJournal');
     },
     createCertificate: createCertificate,
-    findCertificate: findCertificate
+    findCertificate: findCertificate,
+    validateCertificate: validateCertificate
 }
