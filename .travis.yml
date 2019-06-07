@@ -1,0 +1,14 @@
+language: node_js
+
+# Faster container-based builds
+sudo: false
+
+node_js:
+  - "10"
+
+install:
+  - npm install -g truffle ethereumjs-testrpc
+
+script:
+  - nohup testrpc &
+  - cd contracts && truffle test
