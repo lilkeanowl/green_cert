@@ -1,43 +1,44 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.5.0;
 
-import "./erc721.sol";
+import 'openzeppelin-solidity/contracts/token/ERC721/ERC721Full.sol';
+import 'openzeppelin-solidity/contracts/token/ERC721/ERC721Mintable.sol';
 
-contract GreenCert is ERC721 {
+contract GreenCert is ERC721Full, ERC721Mintable {
     struct record {
         address generator;
         uint begin;
         uint end;
     }
-    
+
     record[] public records;
     address public founder;
-    
+
     mapping (address=>bool) generators;
     mapping (address=>string) generatorsName;
     mapping (address=>bool) verificators;
     mapping (address=>string) verificatorsName;
-    
+
     event RecordAdded(address indexed generator, uint indexed number);
     event Green(uint indexed number, address indexed owner);
-    
-    constructor() public {
+
+    constructor() ERC721Full("Green Certificates", "GRN") public {
         founder = msg.sender;
     }
-    
+
     modifier onlyFounder() {
         require(msg.sender == founder);
         _;
     }
 
-    
-    function addGenerator(address addr, string name) public onlyFounder {
+    function addGenerator(address addr, string memory name) public onlyFounder {
         generators[addr] = true;
         generatorsName[addr] = name;
     }
 
-    function addVerificator(address addr, string name) public onlyFounder {
+    function addVerificator(address addr, string memory name) public onlyFounder {
         verificators[addr] = true;
         verificatorsName[addr] = name;
+        addMinter(addr);
     }
 
     modifier onlyGenerators() {
@@ -50,26 +51,20 @@ contract GreenCert is ERC721 {
         records.push(record(msg.sender, begin, end));
         emit RecordAdded(msg.sender, idx);
     }
-    
+
     modifier onlyVerificators() {
         require(verificators[msg.sender]);
         _;
     }
 
     function approveToGreen(uint idx) public onlyVerificators {
-        require(tokenOwners[idx]==0x0);
-        _addToken(idx, records[idx].generator);
-        tokenOwners[idx] = records[idx].generator;
-        totalSupply++;
-        emit Green(idx, records[idx].generator);
-        emit Transfer(0x0, records[idx].generator, idx);
+        mint(records[idx].generator, idx);
     }
-    
+
     function isGreen(uint idx) public view returns(bool, address) {
-        if (ownerOf(idx) == 0x0) {
-            return (false, 0x0);
+        if (_exists(idx)) {
+            return (true, ownerOf(idx));
         }
-        return (true, ownerOf(idx));
+        return (false, address(0x0));
     }
-    
 }
